@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🕷️ Pizzaria do Aranha</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Cabeçalho */
+        header {
+            background: linear-gradient(90deg, #c62828, #e53935);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(229, 57, 53, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid #ffd700;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .logo span {
+            font-size: 1.8em;
+        }
+
+        .cart-button {
+            background: #ffd700;
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .cart-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        .cart-count {
+            background: #c62828;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.85em;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: radial-gradient(circle at center, rgba(229, 57, 53, 0.2), transparent 70%);
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            background: linear-gradient(45deg, #e53935, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            color: #ccc;
+        }
+
+        .spider-web {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Seções */
+        .section-title {
+            text-align: center;
+            font-size: 2em;
+            margin: 40px 0 20px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #e53935, #ffd700);
+            margin: 10px auto;
+            border-radius: 3px;
+        }
+
+        /* Grid de produtos */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+            padding: 20px 40px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, #1e2749, #16213e);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 2px solid #c62828;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(229, 57, 53, 0.5);
+            border-color: #ffd700;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #c62828, #e53935);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,215,0,0.2), transparent 70%);
+        }
+
+        .product-info {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .product-desc {
+            font-size: 0.85em;
+            color: #aaa;
+            margin-bottom: 15px;
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .add-btn {
+            background: linear-gradient(90deg, #c62828, #e53935);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .add-btn:hover {
+            background: linear-gradient(90deg, #ffd700, #ffb300);
+            color: #1a1a2e;
+            transform: scale(1.05);
+        }
+
+        /* Modal Carrinho */
+        .cart-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .cart-modal.active {
+            display: flex;
+        }
+
+        .cart-content {
+            background: linear-gradient(145deg, #1e2749, #16213e);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 3px solid #c62828;
+            box-shadow: 0 20px 60px rgba(229, 57, 53, 0.5);
+            position: relative;
+        }
+
+        .cart-content h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+
+        .close-cart {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #c62828;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+        }
+
+        .close-cart:hover {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #e53935;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: #ffd700;
+            font-size: 0.9em;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-btn {
+            background: #c62828;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .qty-btn:hover {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        .qty {
+            min-width: 25px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            background: transparent;
+            border: none;
+            color: #e53935;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 5px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            padding-top: 20px;
+            border-top: 2px solid #c62828;
+        }
+
+        .cart-total span:last-child {
+            color: #ffd700;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .checkout-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #aaa;
+            font-size: 1.1em;
+        }
+
+        .empty-cart span {
+            display: block;
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(90deg, #c62828, #e53935);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            transform: translateX(400px);
+            transition: transform 0.4s;
+            z-index: 2000;
+            font-weight: bold;
+            border-left: 5px solid #ffd700;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Footer */
+        footer {
+            background: #0a0e1a;
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            border-top: 3px solid #c62828;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        footer .whatsapp-info {
+            color: #25D366;
+            font-weight: bold;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .products-grid {
+                padding: 20px;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            header {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 1.1em;
+            }
+
+            .cart-button {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Animação da teia */
+        @keyframes swing {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .spider-web {
+            animation: swing 4s ease-in-out infinite;
+            transform-origin: top right;
+        }
+
+        /* Scroll customizado */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#c62828, #e53935);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span>🕷️</span>
+            <span>Pizzaria do Aranha</span>
+        </div>
+        <button class="cart-button" onclick="toggleCart()">
+            🛒 Carrinho <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </header>
+
+    <section class="hero">
+        <svg class="spider-web" viewBox="0 0 200 200">
+            <g stroke="#ffd700" stroke-width="2" fill="none">
+                <line x1="0" y1="0" x2="200" y2="200"/>
+                <line x1="0" y1="0" x2="200" y2="100"/>
+                <line x1="0" y1="0" x2="100" y2="200"/>
+                <line x1="0" y1="0" x2="200" y2="50"/>
+                <circle cx="50" cy="50" r="30"/>
+                <circle cx="80" cy="80" r="50"/>
+                <circle cx="110" cy="110" r="70"/>
+            </g>
+        </svg>
+        <h1>🕷️ Pizzaria do Aranha 🕷️</h1>
+        <p>Com grandes poderes vem grandes pizzas!</p>
+    </section>
+
+    <h2 class="section-title">🍕 Nossas Pizzas</h2>
+    <div class="products-grid" id="pizzasGrid"></div>
+
+    <h2 class="section-title">🥤 Bebidas</h2>
+    <div class="products-grid" id="bebidasGrid"></div>
+
+    <!-- Modal do Carrinho -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <button class="close-cart" onclick="toggleCart()">✕</button>
+            <h2>🛒 Seu Carrinho</h2>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal" style="display:none;">
+                <span>Total:</span>
+                <span id="totalValue">R$ 0,00</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="finalizarCompra()">
+                <span>📱</span> Finalizar no WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Item adicionado! 🕷️</div>
+
+    <footer>
+        <p>🕷️ Pizzaria do Aranha - Com grandes sabores vem grandes pizzas!</p>
+        <p class="whatsapp-info">📱 Pedidos: (81) 99167-6409</p>
+        <p>© 2024 Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        // ============ PRODUTOS ============
+        const pizzas = [
+            { id: 1, nome: "Pizza Homem-Aranha", desc: "Molho especial, mussarela, pepperoni e azeitonas vermelhas", preco: 49.90, emoji: "🕷️" },
+            { id: 2, nome: "Pizza Venom", desc: "Mussarela, calabresa picante, cebola roxa e pimenta", preco: 52.90, emoji: "🖤" },
+            { id: 3, nome: "Pizza Duende Verde", desc: "Mussarela, brócolis, bacon e catupiry", preco: 54.90, emoji: "💚" },
+            { id: 4, nome: "Pizza Doutor Octopus", desc: "4 queijos: mussarela, provolone, gorgonzola e parmesão", preco: 59.90, emoji: "🐙" },
+            { id: 5, nome: "Pizza Mary Jane", desc: "Mussarela, tomate cereja, manjericão e orégano", preco: 47.90, emoji: "🌹" },
+            { id: 6, nome: "Pizza Miles Morales", desc: "Mussarela, frango desfiado, milho e catupiry", preco: 51.90, emoji: "⚡" },
+            { id: 7, nome: "Pizza Sandman", desc: "Mussarela, carne seca, cebola e queijo coalho", preco: 56.90, emoji: "⏳" },
+            { id: 8, nome: "Pizza Gwen Stacy", desc: "Mussarela, presunto, palmito e azeitonas", preco: 48.90, emoji: "💗" },
+            { id: 9, nome: "Pizza Electro", desc: "Mussarela, calabresa, pimentão amarelo e cebola", preco: 50.90, emoji: "⚡" },
+            { id: 10, nome: "Pizza Rei do Crime", desc: "Mussarela, camarão, catupiry e alho poró", preco: 69.90, emoji: "👑" },
+            { id: 11, nome: "Pizza Lagarto", desc: "Mussarela, pepperoni, bacon e pimenta jalapeño", preco: 55.90, emoji: "🦎" },
+            { id: 12, nome: "Pizza Aranha Cósmica", desc: "Mussarela, chocolate, morango e granulado", preco: 57.90, emoji: "🌌" }
+        ];
+
+        const bebidas = [
+            { id: 101, nome: "Coca-Cola 2L", desc: "Refrigerante gelado", preco: 12.90, emoji: "🥤" },
+            { id: 102, nome: "Guaraná Antarctica 2L", desc: "Refrigerante gelado", preco: 11.90, emoji: "🥤" },
+            { id: 103, nome: "Fanta Laranja 2L", desc: "Refrigerante gelado", preco: 11.90, emoji: "🍊" },
+            { id: 104, nome: "Sprite 2L", desc: "Refrigerante gelado", preco: 11.90, emoji: "🍋" },
+            { id: 105, nome: "Suco de Laranja 1L", desc: "Natural e refrescante", preco: 14.90, emoji: "🍊" },
+            { id: 106, nome: "Suco de Uva 1L", desc: "Natural e refrescante", preco: 14.90, emoji: "🍇" },
+            { id: 107, nome: "Água Mineral 500ml", desc: "Com ou sem gás", preco: 5.90, emoji: "💧" },
+            { id: 108, nome: "Cerveja Heineken 330ml", desc: "Long neck gelada", preco: 12.90, emoji: "🍺" },
+            { id: 109, nome: "Cerveja Budweiser 330ml", desc: "Long neck gelada", preco: 10.90, emoji: "🍺" },
+            { id: 110, nome: "Energético Red Bull", desc: "Lata 250ml", preco: 15.90, emoji: "⚡" },
+            { id: 111, nome: "Chá Gelado Limão 1,5L", desc: "Refrescante", preco: 10.90, emoji: "🍹" },
+            { id: 112, nome: "Milkshake Chocolate 500ml", desc: "Cremoso e gelado", preco: 18.90, emoji: "🥛" },
+            { id: 113, nome: "Milkshake Morango 500ml", desc: "Cremoso e gelado", preco: 18.90, emoji: "🍓" },
+            { id: 114, nome: "Vinho Tinto Reserva", desc: "Garrafa 750ml", preco: 45.90, emoji: "🍷" }
+        ];
+
+        // ============ ESTADO ============
+        let carrinho = JSON.parse(localStorage.getItem('carrinhoAranha')) || [];
+        const WHATSAPP = "5581991676409";
+
+        // ============ RENDERIZAR PRODUTOS ============
+        function renderProducts() {
+            const pizzasGrid = document.getElementById('pizzasGrid');
+            const bebidasGrid = document.getElementById('bebidasGrid');
+
+            pizzasGrid.innerHTML = pizzas.map(p => `
+                <div class="product-card">
+                    <div class="product-image">${p.emoji}</div>
+                    <div class="product-info">
+                        <div class="product-name">${p.nome}</div>
+                        <div class="product-desc">${p.desc}</div>
+                        <div class="product-footer">
+                            <span class="product-price">R$ ${p.preco.toFixed(2).replace('.', ',')}</span>
+                            <button class="add-btn" onclick="addToCart(${p.id}, 'pizza')">+ Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            bebidasGrid.innerHTML = bebidas.map(b => `
+                <div class="product-card">
+                    <div class="product-image">${b.emoji}</div>
+                    <div class="product-info">
+                        <div class="product-name">${b.nome}</div>
+                        <div class="product-desc">${b.desc}</div>
+                        <div class="product-footer">
+                            <span class="product-price">R$ ${b.preco.toFixed(2).replace('.', ',')}</span>
+                            <button class="add-btn" onclick="addToCart(${b.id}, 'bebida')">+ Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============ ADICIONAR AO CARRINHO ============
+        function addToCart(id, tipo) {
+            const lista = tipo === 'pizza' ? pizzas : bebidas;
+            const produto = lista.find(p => p.id === id);
+            
+            const itemExistente = carrinho.find(i => i.id === id);
+            
+            if (itemExistente) {
+                itemExistente.qtd++;
+            } else {
+                carrinho.push({
+                    id: produto.id,
+                    nome: produto.nome,
+                    preco: produto.preco,
+                    emoji: produto.emoji,
+                    qtd: 1
+                });
+            }
+            
+            salvarCarrinho();
+            mostrarToast(`${produto.nome} adicionado! 🕷️`);
+        }
+
+        // ============ SALVAR CARRINHO ============
+        function salvarCarrinho() {
+            localStorage.setItem('carrinhoAranha', JSON.stringify(carrinho));
+            atualizarCarrinhoUI();
+        }
+
+        // ============ ATUALIZAR UI ============
+        function atualizarCarrinhoUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const totalValue = document.getElementById('totalValue');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            const totalItens = carrinho.reduce((acc, i) => acc + i.qtd, 0);
+            cartCount.textContent = totalItens;
+
+            if (carrinho.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <span>🕸️</span>
+                        Seu carrinho está vazio!<br>
+                        Adicione delícias do Aranha!
+                    </div>
+                `;
+                cartTotal.style.display = 'none';
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            cartItems.innerHTML = carrinho.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.emoji} ${item.nome}</div>
+                        <div class="cart-item-price">R$ ${item.preco.toFixed(2).replace('.', ',')} cada</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="qty-btn" onclick="alterarQtd(${item.id}, -1)">−</button>
+                        <span class="qty">${item.qtd}</span>
+                        <button class="qty-btn" onclick="alterarQtd(${item.id}, 1)">+</button>
+                        <button class="remove-btn" onclick="removerItem(${item.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const total = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+            totalValue.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            cartTotal.style.display = 'flex';
+            checkoutBtn.disabled = false;
+        }
+
+        // ============ ALTERAR QUANTIDADE ============
+        function alterarQtd(id, delta) {
+            const item = carrinho.find(i => i.id === id);
+            if (!item) return;
+            
+            item.qtd += delta;
+            if (item.qtd <= 0) {
+                removerItem(id);
+                return;
+            }
+            salvarCarrinho();
+        }
+
+        // ============ REMOVER ITEM ============
+        function removerItem(id) {
+            carrinho = carrinho.filter(i => i.id !== id);
+            salvarCarrinho();
+            mostrarToast('Item removido! 🗑️');
+        }
+
+        // ============ TOGGLE CARRINHO ============
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('active');
+        }
+
+        // ============ TOAST ============
+        function mostrarToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // ============ FINALIZAR COMPRA ============
+        function finalizarCompra() {
+            if (carrinho.length === 0) return;
+
+            const total = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
+
+            let mensagem = `🕷️ *PIZZARIA DO ARANHA* 🕷️\n`;
+            mensagem += `━━━━━━━━━━━━━━━━━━━\n\n`;
+            mensagem += `*🍕 MEU PEDIDO:*\n\n`;
+
+            carrinho.forEach(item => {
+                mensagem += `${item.emoji} *${item.nome}*\n`;
+                mensagem += `   ${item.qtd}x R$ ${item.preco.toFixed(2).replace('.', ',')} = R$ ${(item.preco * item.qtd).toFixed(2).replace('.', ',')}\n\n`;
+            });
+
+            mensagem += `━━━━━━━━━━━━━━━━━━━\n`;
+            mensagem += `💰 *TOTAL: R$ ${total.toFixed(2).replace('.', ',')}*\n`;
+            mensagem += `━━━━━━━━━━━━━━━━━━━\n\n`;
+            mensagem += `📍 *Endereço de entrega:*\n`;
+            mensagem += `_(Por favor, informe seu endereço completo)_\n\n`;
+            mensagem += `💳 *Forma de pagamento:*\n`;
+            mensagem += `_(Dinheiro, PIX ou Cartão)_\n\n`;
+            mensagem += `🕸️ Obrigado pela preferência!`;
+
+            const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        }
+
+        // ============ INICIALIZAR ============
+        renderProducts();
+        atualizarCarrinhoUI();
+
+        // Fechar modal clicando fora
+        document.getElementById('cartModal').addEventListener('click', (e) => {
+            if (e.target.id === 'cartModal') toggleCart();
+        });
+
+        // Tecla ESC fecha o modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('cartModal');
+                if (modal.classList.contains('active')) toggleCart();
+            }
+        });
+    </script>
+
+</body>
+</html>
